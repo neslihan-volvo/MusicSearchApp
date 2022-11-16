@@ -15,36 +15,8 @@ struct ContentView: View {
     
     var body: some View {
         
-        NavigationView {
+        NavigationView() {
             
-            VStack(alignment: .leading){
-                TextField("Enter search key",text:$keyword)
-                    .onChange(of: keyword) { newValue in
-                        if(keyword.count <= 2){
-                            //self.alertIsVisible = true
-                            self.disabled = true
-                            print("button pressed")
-                        }
-                        else {
-                            self.disabled = false
-                        }
-                    }
-                    .onSubmit {
-                        // make a request here
-                    }
-                    .padding()
-                    .border(.gray)
-                //Button("Search") {
-                    //make a request here
-                    // if there is an error display it with alert
-                    //self.alertIsVisible = true
-                //}
-                //.disabled(disabled)
-                //.padding()
-                //.border(.blue)
-                //.buttonBorderShape(.roundedRectangle)
-                //Details view shoul take specific list items to show detailed data
-                NavigationView {
                     List(musicListArray) { musicItem in
                         //search results in a list
                         NavigationLink(destination: DetailsView(details: musicItem)){
@@ -57,13 +29,27 @@ struct ContentView: View {
                             }
                         }
                     }
-                    .navigationBarHidden(true)
                     //.frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height*0.85)
-                    
-                }
-            }
-            .padding()
+           
+        }
+        .searchable(text: $keyword, placement: .navigationBarDrawer(displayMode: .always)){
             
+        
+        }
+        /*.onChange(of: keyword) { keyword in
+
+            if !keyword.isEmpty {
+                //if there is keyword make the request after enter pressed
+                musicListArray = musicListArray.filter { $0.artistName.contains(keyword) || $0.collectionName.contains(keyword)}
+            } else {
+                //if keyword is empty there do nothing
+            }
+        }*/
+        .onSubmit(of: .search) {
+            print("make the request here!!!")
+            if !keyword.isEmpty {
+                //add the keyword to reuest and call network request here
+            }
         }
     }
 }

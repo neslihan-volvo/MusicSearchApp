@@ -26,12 +26,12 @@ public struct MusicListItem: Identifiable {
 }
 
 public enum WrapperType: Equatable {
-    case wrapperTrack
-    case wrapperCollection
-    case wrapperArtist
+    case track
+    case collection
+    case artist
 }
 var item1 = MusicListItem(
-    wrapperType: WrapperType.wrapperTrack,
+    wrapperType: WrapperType.track,
     kind: "song",
     artistId: 1234,
     trackId: 1234,
@@ -48,7 +48,7 @@ var item1 = MusicListItem(
     currency: "USD"
 )
 var item2 = MusicListItem(
-    wrapperType: WrapperType.wrapperTrack,
+    wrapperType: WrapperType.track,
     kind: "song",
     artistId: 1234,
     trackId: 1234,
