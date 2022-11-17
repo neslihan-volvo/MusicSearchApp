@@ -6,12 +6,11 @@
 //
 import SwiftUI
 
-public struct MusicListItem: Identifiable {
+public struct MusicListItem: Codable, Identifiable {
     public let id = UUID()
     public let wrapperType: WrapperType
     public let kind: String
-    public let artistId: Int64
-    public let trackId: Int64
+    public let artistId: Int
     public let artistName: String
     public let collectionName: String
     public let trackName: String
@@ -23,18 +22,45 @@ public struct MusicListItem: Identifiable {
     public let collectionPrice: Double
     public let trackPrice: Double
     public let currency: String
+    
+    /*init(wrapperType: WrapperType, kind: String, artistId: Int, artistName: String, collectionName: String, trackName: String, artisViewUrl: String, collectionViewUrl: String, previewUrl: String, artworkUrl60: String, artworkUrl100: String, collectionPrice: Double, trackPrice: Double, currency: String) {
+        self.wrapperType = wrapperType
+        self.kind = kind
+        self.artistId = artistId
+        self.artistName = artistName
+        self.collectionName = collectionName
+        self.trackName = trackName
+        self.artisViewUrl = artisViewUrl
+        self.collectionViewUrl = collectionViewUrl
+        self.previewUrl = previewUrl
+        self.artworkUrl60 = artworkUrl60
+        self.artworkUrl100 = artworkUrl100
+        self.collectionPrice = collectionPrice
+        self.trackPrice = trackPrice
+        self.currency = currency
+    }*/
 }
 
-public enum WrapperType: Equatable {
+public enum WrapperType: Equatable, Codable {
     case track
     case collection
     case artist
+}
+
+public enum MusicSearchError: Error {
+    case requestFailed
+    case jsonDecodeFailed
+    
+}
+
+public struct MusicSearchResponse: Codable {
+    public var results : [MusicListItem]
+    
 }
 var item1 = MusicListItem(
     wrapperType: WrapperType.track,
     kind: "song",
     artistId: 1234,
-    trackId: 1234,
     artistName: "Jack Johnson",
     collectionName: "Sing-a-Longs and Lullabies for the Film Curious George",
     trackName: "Upside Down",
@@ -51,7 +77,6 @@ var item2 = MusicListItem(
     wrapperType: WrapperType.track,
     kind: "song",
     artistId: 1234,
-    trackId: 1234,
     artistName: "Jack Johnson",
     collectionName: "Sing-a-Longs and Lullabies for the Film Curious George",
     trackName: "Upside Down",
