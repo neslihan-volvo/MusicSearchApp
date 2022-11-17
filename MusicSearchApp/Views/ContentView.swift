@@ -4,7 +4,6 @@
 //
 //  Created by Neslihan Doğan Aydemir on 2022-11-14.
 //
-
 import SwiftUI
 
 struct ContentView: View {
@@ -17,8 +16,7 @@ struct ContentView: View {
         
         NavigationView(){
             
-            List(musicListArray) { musicItem in
-                //search results in a list
+            List(musicResultList) { musicItem in
                 NavigationLink(destination: DetailsView(details: musicItem)){
                     VStack(alignment: .leading){
                         
@@ -29,17 +27,11 @@ struct ContentView: View {
                     }
                 }
             }
-            //.frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height*0.85)
-            
         }
-        .searchable(text: $keyword, placement: .navigationBarDrawer(displayMode: .always)){
-            
-            
-        }
+        .searchable(text: $keyword, placement: .navigationBarDrawer(displayMode: .always)){}
         .onSubmit(of: .search) {
             print("make the request here!!!")
             if !keyword.isEmpty {
-                //MusicSearchRequest(term:keyword)
                 Task {
                     do {
                         try await getMusicList(searchKey: keyword)
@@ -51,29 +43,28 @@ struct ContentView: View {
         }
     }
     func getMusicList(searchKey:String) async throws {
-        let urlPath = "https://itunes.apple.com/search?term=\(searchKey)&media=music"
+        let urlPath = "https://itunes.apple.com/search?term=\(searchKey)&limit=10&media=music"
         
-        let configuration = URLSessionConfiguration.default
-        let session = URLSession(configuration: configuration)
+        let session = URLSession.shared
         
-        Task {
             let (data, response) = try await session.data(from: URL(string:urlPath)!)
-            
             guard let httpResponse = response as? HTTPURLResponse,
                   (200..<300).contains(httpResponse.statusCode)
             else {
                 throw MusicSearchError.requestFailed
             }
-            
-            guard let musicSearchResponse = try? JSONDecoder().decode(MusicSearchResponse.self, from: data) else {
-                print("decoding went wrong")
-                throw MusicSearchError.jsonDecodeFailed
+            print("JSON String: \(String(data: data, encoding: .utf8) ??  "no data here")")
+            do {
+                let musicSearchResponse = try  JSONDecoder().decode(MusicSearchResponse.self, from: data)
+                await MainActor.run(body: {
+                    musicResultList = musicSearchResponse.results
+                })
+            }catch {
+                throw error
             }
             
-            await MainActor.run {
-                musicResultList = musicSearchResponse.results
-            }
-        }
+            
+        
     }
 }
 struct ContentView_Previews: PreviewProvider {
