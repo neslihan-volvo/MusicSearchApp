@@ -54,11 +54,7 @@ public enum MusicSearchError: Error {
     
 }
 
-public struct MusicSearchResponse: Codable {
-    public var resultCount : Int
-    public var results : [MusicListItem]
-    
-}
+
 var item1 = MusicListItem(
     id:123124,
     wrapperType: WrapperType.track,

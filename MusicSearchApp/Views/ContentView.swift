@@ -8,33 +8,23 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var keyword : String = ""
-    @State private var disabled : Bool = true
-    @State private var alertIsVisible : Bool = false
     @State private var musicResultList: [MusicListItem] = []
     
     var body: some View {
         
         NavigationView(){
-            
             List(musicResultList) { musicItem in
-                NavigationLink(destination: DetailsView(details: musicItem)){
-                    VStack(alignment: .leading){
-                        
-                        Text(musicItem.artistName)
-                            .font(.headline)
-                        Text(musicItem.collectionName)
-                            .font(.subheadline)
-                    }
-                }
+                MusicListItemView(musicItem: musicItem)
+                .listRowSeparator(.hidden)
             }
         }
         .searchable(text: $keyword, placement: .navigationBarDrawer(displayMode: .always)){}
         .onSubmit(of: .search) {
-            print("make the request here!!!")
             if !keyword.isEmpty {
+                let searchString = createSearchString(string: keyword)
                 Task {
                     do {
-                        try await getMusicList(searchKey: keyword)
+                        try await getMusicList(searchKey: searchString)
                     } catch {
                         print(error)
                     }
@@ -42,29 +32,33 @@ struct ContentView: View {
             }
         }
     }
+    
     func getMusicList(searchKey:String) async throws {
-        let urlPath = "https://itunes.apple.com/search?term=\(searchKey)&limit=10&media=music"
         
+        let urlPath = "https://itunes.apple.com/search?term=\(searchKey)&media=music"
         let session = URLSession.shared
+        let (data, response) = try await session.data(from: URL(string:urlPath)!)
         
-            let (data, response) = try await session.data(from: URL(string:urlPath)!)
-            guard let httpResponse = response as? HTTPURLResponse,
-                  (200..<300).contains(httpResponse.statusCode)
-            else {
-                throw MusicSearchError.requestFailed
+        guard let httpResponse = response as? HTTPURLResponse, (200..<300).contains(httpResponse.statusCode)
+        else {
+            throw MusicSearchError.requestFailed
+        }
+        do {
+            let musicSearchResponse = try  JSONDecoder().decode(MusicSearchResponse.self, from: data)
+            await MainActor.run {
+                musicResultList = musicSearchResponse.results
             }
-            print("JSON String: \(String(data: data, encoding: .utf8) ??  "no data here")")
-            do {
-                let musicSearchResponse = try  JSONDecoder().decode(MusicSearchResponse.self, from: data)
-                await MainActor.run(body: {
-                    musicResultList = musicSearchResponse.results
-                })
-            }catch {
-                throw error
-            }
-            
-            
-        
+        }catch {
+            throw error
+        }
+    }
+    
+    func createSearchString(string:String)-> String{
+        let trimmedString = string.trimmingCharacters(in: .whitespacesAndNewlines)
+        let searchString = String(trimmedString.map {
+            $0 == " " ? "+" : $0
+        })
+        return searchString
     }
 }
 struct ContentView_Previews: PreviewProvider {

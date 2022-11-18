@@ -15,7 +15,9 @@ struct DetailsView: View {
             
             Text(details.artistName)
             Text(details.collectionName)
-            //Image(uiImage: getImageData(url:details.artworkUrl60)) // there should be an extension to download image data from specified url
+            // there should be an extension to download image data from specified url
+            //add more detail
+            //add play option for preview
         }
         
     }
