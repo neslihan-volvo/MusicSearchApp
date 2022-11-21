@@ -9,6 +9,7 @@ import SwiftUI
 struct ContentView: View {
     @State private var keyword : String = ""
     @State private var musicResultList: [MusicListItem] = []
+    @State private var showAlert = false
     
     var body: some View {
         
@@ -18,10 +19,12 @@ struct ContentView: View {
                 .listRowSeparator(.hidden)
             }
         }
+        .alert("There is no search result. Plese try another keyword.", isPresented: $showAlert) {
+          Button("Dismiss", role: .cancel) { showAlert = false } }
         .searchable(text: $keyword, placement: .navigationBarDrawer(displayMode: .always)){}
         .onSubmit(of: .search) {
             if !keyword.isEmpty {
-                let searchString = createSearchString(string: keyword)
+                let searchString = keyword.createSearchString()
                 Task {
                     do {
                         try await getMusicList(searchKey: searchString)
@@ -45,26 +48,21 @@ struct ContentView: View {
         }
         do {
             let musicSearchResponse = try  JSONDecoder().decode(MusicSearchResponse.self, from: data)
-            await MainActor.run {
-                musicResultList = musicSearchResponse.results
+            if (musicSearchResponse.resultCount == 0){
+                showAlert = true
+            }else{
+                await MainActor.run {
+                    musicResultList = musicSearchResponse.results
+                }
             }
         }catch {
             throw error
         }
     }
-    
-    func createSearchString(string:String)-> String{
-        let trimmedString = string.trimmingCharacters(in: .whitespacesAndNewlines)
-        let searchString = String(trimmedString.map {
-            $0 == " " ? "+" : $0
-        })
-        return searchString
-    }
 }
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         
-        //let musicArray = MusicListItem.mockData()
         ContentView()
     }
 }

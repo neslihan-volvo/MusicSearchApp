@@ -4,25 +4,25 @@
 //
 //  Created by Neslihan Doğan Aydemir on 2022-11-15.
 //
-
 import SwiftUI
 
 struct MusicListItemView: View {
+    
     var musicItem : MusicListItem
     @State private var songImage = UIImage(systemName: "star")
+    @ObservedObject private var downloader = ImageDownloader()
+    
     var body: some View {
         
         NavigationLink(destination: DetailsView(details: musicItem)){
             HStack{
                 Image(uiImage: songImage!)
-                    .frame(width: 45, height: 50)
-                    .scaledToFill()
+                    .frame(width: 60, height: 60)
                     .clipShape(Circle())
                     .overlay(Circle().stroke(Color.white,lineWidth: 3))
                     .shadow(radius: 5)
                 
                 VStack(alignment: .leading){
-                    
                     Text(musicItem.artistName)
                         .font(.headline)
                     Text(musicItem.trackName)
@@ -30,34 +30,28 @@ struct MusicListItemView: View {
                 }
                 .onAppear(perform: {
                     Task {
-                        await getImage(url: URL(string: musicItem.artworkUrl60)!)
+                        await getImage()
                     }
                 })
             }
-            
         }
-    
     }
     
-    func getImage(url:URL) async {
+    func getImage() async {
+        guard let imageURL = URL(string: musicItem.artworkUrl60) else {
+            return
+        }
         do {
-            //let data = try await downloader.downloadArtwork(at: url)
-            let session = URLSession.shared
-            let (downloadURL, response) = try await session.download(from: url)
-            let data = try Data(contentsOf: downloadURL)
-            guard let image = UIImage(data: data) else {
-                return
-            }
+            let image = try await downloader.downloadImage(url: imageURL)
             songImage = image
-            } catch {
-              print(error)
-            }
+        } catch {
+            print(error)
+        }
     }
 }
 
 struct MusicListItemView_Previews: PreviewProvider {
     static var previews: some View {
-        let musicItemArray = musicListArray
-        MusicListItemView(musicItem: musicItemArray[0])
+        MusicListItemView(musicItem: item1)
     }
 }

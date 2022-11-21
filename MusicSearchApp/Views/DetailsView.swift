@@ -4,28 +4,97 @@
 //
 //  Created by Neslihan Doğan Aydemir on 2022-11-15.
 //
-
 import SwiftUI
+import AVKit
 
 struct DetailsView: View {
+    
     var details: MusicListItem
+    @State private var songImage = UIImage(systemName: "star")
+    @State private var musicPlayer = AVAudioPlayer()
+    @State private var downloaded = false
+    
+    @ObservedObject private var imageDownloader = ImageDownloader()
+    @ObservedObject private var musicDownloader = MusicDownloader()
     
     var body: some View {
         VStack{
-            
+            Spacer()
+            Image(uiImage: songImage!)
+                .frame(width: 150, height: 150)
+                .scaledToFill()
+                .overlay(Rectangle().stroke(Color.white,lineWidth: 3))
+                .shadow(radius: 8)
+                .padding()
             Text(details.artistName)
+                .font(.title)
+            Text(details.trackName)
+                .font(.title)
+            Button("Play Music") {
+                //play()
+            }
+            .padding()
+            .font(.title)
+            Spacer()
             Text(details.collectionName)
-            // there should be an extension to download image data from specified url
-            //add more detail
-            //add play option for preview
+                .font(.title2)
+            HStack{
+                Text(String(details.collectionPrice)).font(.footnote)
+                Text(String(details.currency)).font(.footnote)
+            }
+        }
+        .onAppear(perform: {
+            Task {
+                await getImage()
+                //await getMusic()
+            }
+        })
+    }
+    func getImage() async {
+        guard let imageURL = URL(string: details.artworkUrl100) else {
+            return
+        }
+        do {
+            let image = try await imageDownloader.downloadImage(url: imageURL)
+            songImage = image
+        } catch {
+          print(error)
         }
         
+    }
+    func getMusic() async {
+        if musicDownloader.downloadLocation == nil {
+            downloaded = false
+            guard let previewURL = URL(string: details.previewUrl) else {
+                return
+            }
+            do {
+                try await musicDownloader.downloadMusic(url: previewURL)
+            } catch {
+                print(error)
+            }
+        } else {
+            downloaded = true
+        }
+    }
+    func play(){
+        do{
+            musicPlayer = try AVAudioPlayer(contentsOf: musicDownloader.downloadLocation!)
+            musicPlayer.play()
+        }catch{
+            print(error)
+        }
     }
 }
 
 struct DetailsView_Previews: PreviewProvider {
     static var previews: some View {
-        let details: MusicListItem = MusicListItem(id:4677, wrapperType: WrapperType.track, kind: "song", artistId: 1234, artistName: "Jack Johnson", collectionName: "Sing-a-Longs and Lullabies for the Film Curious George", trackName: "Upside Down", artistViewUrl: "https://itunes.apple.com/WebObjects/MZStore.woa/wa/viewArtist?id=909253", collectionViewUrl: "https://itunes.apple.com/WebObjects/MZStore.woa/wa/viewAlbum?i=120954025&id=120954021&s=143441", previewUrl: "http://a1099.itunes.apple.com/r10/Music/f9/54/43/mzi.gqvqlvcq.aac.p.m4p", artworkUrl60: "http://a1.itunes.apple.com/r10/Music/3b/6a/33/mzi.qzdqwsel.60x60-50.jpg", artworkUrl100: "http://a1.itunes.apple.com/r10/Music/3b/6a/33/mzi.qzdqwsel.100x100-75.jpg", collectionPrice: 10.99, trackPrice: 0.99, currency: "USD")
-        DetailsView(details:details)
+        
+        DetailsView(details: item1)
     }
 }
+
+
+
+
+
