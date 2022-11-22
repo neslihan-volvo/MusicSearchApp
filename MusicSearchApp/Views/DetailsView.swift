@@ -11,7 +11,7 @@ struct DetailsView: View {
     
     var details: MusicListItem
     @State private var songImage = UIImage(systemName: "star")
-    @State private var musicPlayer = AVAudioPlayer()
+    @State private var musicPlayer = AVPlayer()
     @State private var downloaded = false
     
     @ObservedObject private var imageDownloader = ImageDownloader()
@@ -31,7 +31,7 @@ struct DetailsView: View {
             Text(details.trackName)
                 .font(.title)
             Button("Play Music") {
-                //play()
+                play()
             }
             .padding()
             .font(.title)
@@ -43,12 +43,10 @@ struct DetailsView: View {
                 Text(String(details.currency)).font(.footnote)
             }
         }
-        .onAppear(perform: {
-            Task {
-                await getImage()
-                //await getMusic()
-            }
-        })
+        .task { 
+            await getImage()
+        }
+        
     }
     func getImage() async {
         guard let imageURL = URL(string: details.artworkUrl100) else {
@@ -56,9 +54,14 @@ struct DetailsView: View {
         }
         do {
             let image = try await imageDownloader.downloadImage(url: imageURL)
-            songImage = image
+            await MainActor.run {
+                
+                songImage = image
+            }
         } catch {
+        
           print(error)
+            
         }
         
     }
@@ -78,12 +81,10 @@ struct DetailsView: View {
         }
     }
     func play(){
-        do{
-            musicPlayer = try AVAudioPlayer(contentsOf: musicDownloader.downloadLocation!)
+        
+            musicPlayer = AVPlayer(url: URL(string: details.previewUrl)!)
             musicPlayer.play()
-        }catch{
-            print(error)
-        }
+        
     }
 }
 

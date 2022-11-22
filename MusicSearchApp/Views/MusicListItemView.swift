@@ -28,11 +28,9 @@ struct MusicListItemView: View {
                     Text(musicItem.trackName)
                         .font(.footnote)
                 }
-                .onAppear(perform: {
-                    Task {
-                        await getImage()
-                    }
-                })
+                .task {
+                    await getImage()
+                }
             }
         }
     }
