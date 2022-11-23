@@ -1,8 +1,8 @@
-import SwiftUI
-extension String{
-    
-    mutating func createSearchString()-> String{
-        let trimmed = self.trimmingCharacters(in: .whitespacesAndNewlines)
+import Foundation
+
+extension String {
+    func makeSearchString() -> String {
+        let trimmed = trimmingCharacters(in: .whitespacesAndNewlines)
         let mapped = String(trimmed.map {
             $0 == " " ? "+" : $0
         })

@@ -10,17 +10,15 @@ import AVKit
 struct DetailsView: View {
     
     var details: MusicListItem
-    @State private var songImage = UIImage(systemName: "star")
     @State private var musicPlayer = AVPlayer()
     @State private var downloaded = false
     
     @ObservedObject private var imageDownloader = ImageDownloader()
-    @ObservedObject private var musicDownloader = MusicDownloader()
     
     var body: some View {
         VStack{
             Spacer()
-            Image(uiImage: songImage!)
+            Image(uiImage: imageDownloader.songImage!)
                 .frame(width: 150, height: 150)
                 .scaledToFill()
                 .overlay(Rectangle().stroke(Color.white,lineWidth: 3))
@@ -32,6 +30,9 @@ struct DetailsView: View {
                 .font(.title)
             Button("Play Music") {
                 play()
+                // add new functions to handle playing music.
+                // for now it does not stop when we go back or no stop button.
+                // there is a function to stop -> .stop
             }
             .padding()
             .font(.title)
@@ -44,53 +45,22 @@ struct DetailsView: View {
             }
         }
         .task { 
-            await getImage()
+            do{
+                try await imageDownloader.getImage(url: details.artworkUrl100)
+            }catch{
+                // handle error here with showing some warnings to the user 
+            }
         }
         
-    }
-    func getImage() async {
-        guard let imageURL = URL(string: details.artworkUrl100) else {
-            return
-        }
-        do {
-            let image = try await imageDownloader.downloadImage(url: imageURL)
-            await MainActor.run {
-                
-                songImage = image
-            }
-        } catch {
-        
-          print(error)
-            
-        }
-        
-    }
-    func getMusic() async {
-        if musicDownloader.downloadLocation == nil {
-            downloaded = false
-            guard let previewURL = URL(string: details.previewUrl) else {
-                return
-            }
-            do {
-                try await musicDownloader.downloadMusic(url: previewURL)
-            } catch {
-                print(error)
-            }
-        } else {
-            downloaded = true
-        }
     }
     func play(){
-        
-            musicPlayer = AVPlayer(url: URL(string: details.previewUrl)!)
-            musicPlayer.play()
-        
+        musicPlayer = AVPlayer(url: URL(string: details.previewUrl)!)
+        musicPlayer.play()
     }
 }
 
 struct DetailsView_Previews: PreviewProvider {
     static var previews: some View {
-        
         DetailsView(details: item1)
     }
 }

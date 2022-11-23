@@ -2,6 +2,8 @@ import SwiftUI
 
 class ImageDownloader: ObservableObject{
     
+    @Published var songImage = UIImage(systemName: "star")
+    
     enum ImageDownloaderError: Error {
         case imageDownloadFailed
         case imageInitializationFailed
@@ -30,6 +32,20 @@ class ImageDownloader: ObservableObject{
             throw ImageDownloaderError.imageInitializationFailed
         }
         return image
+        
+    }
+    func getImage(url: String) async throws{
+        guard let imageURL = URL(string: url) else {
+            return
+        }
+        do {
+            let image = try await downloadImage(url: imageURL)
+            await MainActor.run {
+                songImage = image
+            }
+        } catch {
+            throw error
+        }
         
     }
     
