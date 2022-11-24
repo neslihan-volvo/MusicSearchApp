@@ -17,15 +17,12 @@ class ImageDownloader: ObservableObject{
     }
     
     func downloadImage(url: URL) async throws -> UIImage {
-        let (downloadURL, response) = try await session.download(from: url)
+        
+        let (data, response) = try await session.data(from: url)
 
         guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200
         else {
             throw ImageDownloaderError.networkResponseInvalid
-        }
-        guard let data = try? Data(contentsOf: downloadURL)
-        else{
-            throw ImageDownloaderError.imageDownloadFailed
         }
         guard let image = UIImage(data: data)
         else {
