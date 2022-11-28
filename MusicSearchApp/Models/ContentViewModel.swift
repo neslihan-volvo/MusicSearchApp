@@ -1,55 +1,54 @@
 import Foundation
 protocol NetworkClient: AnyObject {
     func load(request: URLRequest) async throws -> (Data, URLResponse)
-    
 }
 class DefaultNetworkClient:NetworkClient {
     func load(request: URLRequest) async throws -> (Data, URLResponse) {
         let session = URLSession.shared
         return try await session.data(for: request)
     }
-    
-    
 }
 
 class ContentViewModel: ObservableObject {
-    @Published var musicResultList: [MusicListItem] = []
+    @Published var musicResultList: [MusicItemModel] = []
     @Published var showAlert = false
+    
     let networkClient : NetworkClient
     
     init(networkClient: NetworkClient = DefaultNetworkClient()) {
         self.networkClient = networkClient
     }
-    func getMusicList(searchKey: String) async throws -> MusicSearchResponse {
-        let urlPath = "https://itunes.apple.com/search?term=\(searchKey)&media=music"
-
-        let request = URLRequest(url: URL(string:urlPath)!)
-        let (data, response) = try await networkClient.load(request: request )
-        guard let httpResponse = response as? HTTPURLResponse, (200..<300).contains(httpResponse.statusCode)
+    
+    func getMusicList(_ searchKey: String) async throws {
+        let searchString = searchKey.makeSearchString()//this
+        let urlPath = "https://itunes.apple.com/search?term=\(searchString)&media=music"
+        
+        // should I move follwing 5 lines to defoult network client with new func name?
+        guard let searchURL = URL(string: urlPath)
+        else {
+            return
+        }
+        let request = URLRequest(url: searchURL)
+        
+        guard let (data, response) = try? await networkClient.load(request: request )
         else {
             throw MusicSearchError.requestFailed
         }
         
-        do {
-            let musicSearchResponse = try  JSONDecoder().decode(MusicSearchResponse.self, from: data)
-            return musicSearchResponse
-            
-        } catch {
-            throw error
+        guard let httpResponse = response as? HTTPURLResponse, (200..<300).contains(httpResponse.statusCode)
+        else {
+            throw MusicSearchError.networkResponseInvalid
         }
-    }
-    
-    func getMusicList(_ keyword: String) async {
-        let searchString = keyword.makeSearchString()
         
         do {
-            let result = try await getMusicList(searchKey: searchString)
+            let musicSearchResponse = try  JSONDecoder().decode(MusicSearchResponse.self, from: data)
             await MainActor.run {
-                musicResultList = result.results
-                showAlert = result.resultCount == 0 ? true : false
+                musicResultList = musicSearchResponse.results
+                showAlert = musicSearchResponse.resultCount == 0 ? true : false
             }
+            
         } catch {
-            print(error)
+            throw MusicSearchError.jsonDecodeFailed
         }
     }
     

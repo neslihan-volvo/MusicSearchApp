@@ -8,7 +8,7 @@ struct ContentView: View {
         
         NavigationView() {
             List(viewModel.musicResultList) { musicItem in
-                MusicListItemView(musicItem: musicItem)
+                MusicItemView(musicItem: musicItem)
                 .listRowSeparator(.hidden)
             }
         }
@@ -18,7 +18,7 @@ struct ContentView: View {
         .onSubmit(of: .search) {
             if !keyword.isEmpty {
                 Task {
-                    await viewModel.getMusicList(keyword)
+                    try await viewModel.getMusicList(keyword)
                 }
             }
         }

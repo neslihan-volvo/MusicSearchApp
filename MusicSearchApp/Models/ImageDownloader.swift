@@ -10,17 +10,17 @@ class ImageDownloader: ObservableObject{
         case networkResponseInvalid
     }
 
-    private let session: URLSession
-
-    init() {
-        self.session = URLSession.shared
+    let networkClient : NetworkClient
+    
+    init(networkClient: NetworkClient = DefaultNetworkClient()) {
+        self.networkClient = networkClient
     }
     
-    func downloadImage(url: URL) async throws -> UIImage {
+    /*func downloadImage(url: URL) async throws -> UIImage {
         
         let (data, response) = try await session.data(from: url)
 
-        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200
+        guard let httpResponse = response as? HTTPURLResponse, (200..<300).contains(httpResponse.statusCode)
         else {
             throw ImageDownloaderError.networkResponseInvalid
         }
@@ -30,18 +30,31 @@ class ImageDownloader: ObservableObject{
         }
         return image
         
-    }
+    }*/
     func getImage(url: String) async throws{
-        guard let imageURL = URL(string: url) else {
+        guard let imageURL = URL(string: url)
+        else {
             return
         }
-        do {
-            let image = try await downloadImage(url: imageURL)
-            await MainActor.run {
-                songImage = image
-            }
-        } catch {
-            throw error
+        let request = URLRequest(url: imageURL)
+       
+        guard let (data, response) = try? await networkClient.load(request: request)
+        else {
+            throw ImageDownloaderError.imageDownloadFailed
+        }
+
+        guard let httpResponse = response as? HTTPURLResponse, (200..<300).contains(httpResponse.statusCode)
+        else {
+            throw ImageDownloaderError.networkResponseInvalid
+        }
+        
+        guard let image = UIImage(data: data)
+        else {
+            throw ImageDownloaderError.imageInitializationFailed
+        }
+        
+        await MainActor.run {
+            songImage = image
         }
         
     }

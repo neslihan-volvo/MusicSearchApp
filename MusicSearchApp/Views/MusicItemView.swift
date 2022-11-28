@@ -6,17 +6,16 @@
 //
 import SwiftUI
 
-struct MusicListItemView: View {
+struct MusicItemView: View {
     
-    var musicItem : MusicListItem
-    @State private var songImage = UIImage(systemName: "star")
-    @ObservedObject private var downloader = ImageDownloader()
+    var musicItem : MusicItemModel
+    @ObservedObject private var imageDownloader = ImageDownloader()
     
     var body: some View {
         
         NavigationLink(destination: DetailsView(details: musicItem)){
             HStack{
-                Image(uiImage: songImage!)
+                Image(uiImage: imageDownloader.songImage!)
                     .frame(width: 60, height: 60)
                     .clipShape(Circle())
                     .overlay(Circle().stroke(Color.white,lineWidth: 3))
@@ -36,12 +35,8 @@ struct MusicListItemView: View {
     }
     
     func getImage() async {
-        guard let imageURL = URL(string: musicItem.artworkUrl60) else {
-            return
-        }
         do {
-            let image = try await downloader.downloadImage(url: imageURL)
-            songImage = image
+            try await imageDownloader.getImage(url: musicItem.artworkUrl60)
         } catch {
             print(error)
         }
@@ -50,6 +45,6 @@ struct MusicListItemView: View {
 
 struct MusicListItemView_Previews: PreviewProvider {
     static var previews: some View {
-        MusicListItemView(musicItem: item1)
+        MusicItemView(musicItem: item1)
     }
 }

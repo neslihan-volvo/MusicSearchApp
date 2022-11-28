@@ -9,7 +9,7 @@ import AVKit
 
 struct DetailsView: View {
     
-    var details: MusicListItem
+    var details: MusicItemModel
     @State private var musicPlayer = AVPlayer()
     @State private var downloaded = false
     
@@ -40,19 +40,24 @@ struct DetailsView: View {
             Text(details.collectionName)
                 .font(.title2)
             HStack{
-                Text(String(details.collectionPrice)).font(.footnote)
-                Text(String(details.currency)).font(.footnote)
+                //Text(String(details.collectionPrice)).font(.footnote)
+                //Text(String(details.currency)).font(.footnote)
             }
         }
         .task { 
-            do{
-                try await imageDownloader.getImage(url: details.artworkUrl100)
-            }catch{
-                // handle error here with showing some warnings to the user 
-            }
+            await getImage()
         }
         
     }
+    
+    func getImage() async {
+        do {
+            try await imageDownloader.getImage(url: details.artworkUrl100)
+        } catch {
+            print(error)
+        }
+    }
+    
     func play(){
         musicPlayer = AVPlayer(url: URL(string: details.previewUrl)!)
         musicPlayer.play()
