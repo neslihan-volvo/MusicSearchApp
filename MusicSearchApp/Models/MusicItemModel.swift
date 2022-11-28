@@ -34,6 +34,9 @@ public enum MusicSearchError: Error {
     case requestFailed
     case networkResponseInvalid
     case jsonDecodeFailed
+    case urlInvalid
+    case searchKeyInvalid
+    
     
 }
 

@@ -1,13 +1,12 @@
 import SwiftUI
 
-class ImageDownloader: ObservableObject{
-    
-    @Published var songImage = UIImage(systemName: "star")
-    
+class ImageDownloader{
+
     enum ImageDownloaderError: Error {
         case imageDownloadFailed
         case imageInitializationFailed
         case networkResponseInvalid
+        case urlInvalid
     }
 
     let networkClient : NetworkClient
@@ -16,25 +15,10 @@ class ImageDownloader: ObservableObject{
         self.networkClient = networkClient
     }
     
-    /*func downloadImage(url: URL) async throws -> UIImage {
-        
-        let (data, response) = try await session.data(from: url)
-
-        guard let httpResponse = response as? HTTPURLResponse, (200..<300).contains(httpResponse.statusCode)
-        else {
-            throw ImageDownloaderError.networkResponseInvalid
-        }
-        guard let image = UIImage(data: data)
-        else {
-            throw ImageDownloaderError.imageInitializationFailed
-        }
-        return image
-        
-    }*/
-    func getImage(url: String) async throws{
+    func getImage(url: String) async throws -> UIImage{
         guard let imageURL = URL(string: url)
         else {
-            return
+            throw ImageDownloaderError.urlInvalid
         }
         let request = URLRequest(url: imageURL)
        
@@ -53,9 +37,7 @@ class ImageDownloader: ObservableObject{
             throw ImageDownloaderError.imageInitializationFailed
         }
         
-        await MainActor.run {
-            songImage = image
-        }
+        return image
         
     }
     

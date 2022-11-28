@@ -9,13 +9,14 @@ import SwiftUI
 struct MusicItemView: View {
     
     var musicItem : MusicItemModel
-    @ObservedObject private var imageDownloader = ImageDownloader()
+    var imageDownloader = ImageDownloader()
+    @State private var image = UIImage()
     
     var body: some View {
         
         NavigationLink(destination: DetailsView(details: musicItem)){
             HStack{
-                Image(uiImage: imageDownloader.songImage!)
+                Image(uiImage: image)
                     .frame(width: 60, height: 60)
                     .clipShape(Circle())
                     .overlay(Circle().stroke(Color.white,lineWidth: 3))
@@ -36,7 +37,7 @@ struct MusicItemView: View {
     
     func getImage() async {
         do {
-            try await imageDownloader.getImage(url: musicItem.artworkUrl60)
+            image = try await imageDownloader.getImage(url: musicItem.artworkUrl60)
         } catch {
             print(error)
         }

@@ -16,10 +16,8 @@ struct ContentView: View {
             Button("Dismiss", role: .cancel) { viewModel.showAlert = false } }
         .searchable(text: $keyword, placement: .navigationBarDrawer(displayMode: .always)){}
         .onSubmit(of: .search) {
-            if !keyword.isEmpty {
-                Task {
-                    try await viewModel.getMusicList(keyword)
-                }
+            Task {
+                try await viewModel.getMusicList(keyword)
             }
         }
     }

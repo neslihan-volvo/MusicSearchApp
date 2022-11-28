@@ -12,13 +12,14 @@ struct DetailsView: View {
     var details: MusicItemModel
     @State private var musicPlayer = AVPlayer()
     @State private var downloaded = false
+    @State private var image = UIImage()
     
-    @ObservedObject private var imageDownloader = ImageDownloader()
+    var imageDownloader = ImageDownloader()
     
     var body: some View {
         VStack{
             Spacer()
-            Image(uiImage: imageDownloader.songImage!)
+            Image(uiImage: image)
                 .frame(width: 150, height: 150)
                 .scaledToFill()
                 .overlay(Rectangle().stroke(Color.white,lineWidth: 3))
@@ -52,7 +53,7 @@ struct DetailsView: View {
     
     func getImage() async {
         do {
-            try await imageDownloader.getImage(url: details.artworkUrl100)
+            image = try await imageDownloader.getImage(url: details.artworkUrl100)
         } catch {
             print(error)
         }
