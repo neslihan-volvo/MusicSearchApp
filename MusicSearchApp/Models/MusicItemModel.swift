@@ -36,10 +36,14 @@ public enum MusicSearchError: Error {
     case jsonDecodeFailed
     case urlInvalid
     case searchKeyInvalid
-    
-    
 }
 
+public enum ImageDownloaderError: Error {
+    case imageDownloadFailed
+    case imageInitializationFailed
+    case networkResponseInvalid
+    case urlInvalid
+}
 
 var item1 = MusicItemModel(
     id:123124,

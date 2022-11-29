@@ -3,8 +3,9 @@ protocol NetworkClient: AnyObject {
     func load(request: URLRequest) async throws -> (Data, URLResponse)
 }
 class DefaultNetworkClient:NetworkClient {
-
+    
     func load(request: URLRequest) async throws -> (Data, URLResponse) {
+        
         let session = URLSession.shared
         return try await session.data(for: request)
     }

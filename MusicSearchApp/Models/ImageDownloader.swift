@@ -1,14 +1,7 @@
 import SwiftUI
 
 class ImageDownloader{
-
-    enum ImageDownloaderError: Error {
-        case imageDownloadFailed
-        case imageInitializationFailed
-        case networkResponseInvalid
-        case urlInvalid
-    }
-
+    
     let networkClient : NetworkClient
     
     init(networkClient: NetworkClient = DefaultNetworkClient()) {
