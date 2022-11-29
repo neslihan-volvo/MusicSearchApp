@@ -27,7 +27,7 @@ final class ImageDownloaderTests: XCTestCase {
         }
     }
     
-    func testContentViewModel_whenResponseDataInvalid_returnError() async throws{
+    func testImageDownloader_whenResponseDataInvalid_returnError() async throws{
         
         let stringURL = "imageURL"
         let mockClient = MockNetworkClient()
@@ -41,29 +41,40 @@ final class ImageDownloaderTests: XCTestCase {
         }
         
     }
-    func testContentViewModel_whenUrlInvalid_returnError() async throws{
+    func testImageDownloader_whenUrlInvalid_returnError() async throws{
         
         let stringURL = ""
         let mockClient = MockNetworkClient()
         mockClient.url = stringURL
         sut = ImageDownloader(networkClient: mockClient)
-        let expectation = self.expectation(description: "urlInvalid")
         do{
             
             let image = try await sut.getImage(url: stringURL)
-            expectation.fulfill()
             XCTFail("Should return error")
             
         }catch{
             XCTAssertEqual(error as? ImageDownloaderError?, ImageDownloaderError.urlInvalid)
         }
-        self.wait(for: [expectation], timeout: 5)
+    }
+    func testImageDownloader_whenRequestSuccesful_returnResponse() async throws {
+        let mockClient = MockNetworkClient()
+        mockClient.data = ImageDownloaderTests.imageMockData()
+        sut = ImageDownloader(networkClient: mockClient)
+        do{
+            let image = try await sut.getImage(url: "imageURL" )
+            XCTAssertNotNil(image)
+            //XCTAssertIdentical(image, UIImage(named: "sampleImage"))
+            //(image,[UIImage (named: "sampleImage")])
+        }catch{
+            
+        }
     }
 }
 
 extension ImageDownloaderTests{
     static func imageMockData() -> Data {
-        let data = Data()
-        return data
+        let bundle = Bundle(for: ImageDownloaderTests.self)
+        let imageUrl = bundle.url(forResource: "sampleImage.jpg", withExtension: nil)
+        return try! Data(contentsOf: imageUrl!)
     }
 }
