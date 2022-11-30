@@ -29,6 +29,7 @@ final class ContentViewModelTests: XCTestCase {
         do{
             try await sut.getMusicList(searchKey)
             let musicItemResult = sut.musicResultList.first
+            XCTAssertTrue(sut.showAlert)
             XCTAssertEqual(musicItemResult?.wrapperType,WrapperType.track)
             XCTAssertEqual(musicItemResult?.kind, "song")
             XCTAssertEqual(musicItemResult?.id, 965168795)
@@ -58,6 +59,21 @@ final class ContentViewModelTests: XCTestCase {
             XCTAssertEqual(error as? MusicSearchError, MusicSearchError.jsonDecodeFailed)
         }
         
+    }
+    func testContentViewModel_whenSearchResultCountZero_setShowAlertTrue() async {
+        let searchKey = "meaninglesSearchKey"
+        let mockClient = MockNetworkClient()
+        mockClient.data = MockNetworkClient.emptyMockData()
+        sut = ContentViewModel(networkClient: mockClient)
+        
+        do{
+            try await sut.getMusicList(searchKey)
+            
+            XCTAssertTrue(sut.showAlert)
+            XCTAssertTrue(sut.musicResultList.count == 0)
+        }catch{
+            XCTAssertEqual(error as? MusicSearchError, MusicSearchError.jsonDecodeFailed)
+        }
     }
     override func setUpWithError() throws {
             

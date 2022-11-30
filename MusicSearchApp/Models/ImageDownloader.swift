@@ -1,14 +1,14 @@
 import SwiftUI
 
-class ImageDownloader{
+class ImageDownloader {
     
-    let networkClient : NetworkClient
+    let networkClient: NetworkClient
     
     init(networkClient: NetworkClient = DefaultNetworkClient()) {
         self.networkClient = networkClient
     }
     
-    func getImage(url: String) async throws -> UIImage{
+    func getImage(url: String) async throws -> UIImage {
         guard let imageURL = URL(string: url)
         else {
             throw ImageDownloaderError.urlInvalid
@@ -31,8 +31,5 @@ class ImageDownloader{
         }
         
         return image
-        
     }
-    
-    
 }

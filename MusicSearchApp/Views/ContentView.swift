@@ -12,9 +12,14 @@ struct ContentView: View {
                 .listRowSeparator(.hidden)
             }
         }
-        .alert("There is no search result. Plese try another keyword.", isPresented: $viewModel.showAlert) {
-            Button("Dismiss", role: .cancel) { viewModel.showAlert = false } }
-        .searchable(text: $keyword, placement: .navigationBarDrawer(displayMode: .always)){}
+        .alert(
+            "There is no search result. Plese try another keyword.",
+            isPresented: $viewModel.showAlert
+        ) {
+            Button("Dismiss", role: .cancel) { viewModel.showAlert = false }
+            
+        }
+        .searchable(text: $keyword, placement: .navigationBarDrawer(displayMode: .always))
         .onSubmit(of: .search) {
             Task {
                 try await viewModel.getMusicList(keyword)

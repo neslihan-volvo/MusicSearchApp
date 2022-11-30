@@ -28,7 +28,13 @@ extension HTTPURLResponse {
                         headerFields: nil)!
     }
 }
-
+class FalingMockNetworkClient : NetworkClient {
+    func load(request: URLRequest) async throws -> (Data, URLResponse) {
+        throw NSError()
+    }
+    
+    
+}
 extension MockNetworkClient {
     static func mockData() -> Data {
         let data = """
@@ -120,6 +126,15 @@ extension MockNetworkClient {
          
                         }
                        ]
+                }
+        """
+        return data.data(using: .utf8)!
+    }
+    static func emptyMockData() -> Data {
+        let data = """
+                {
+                    "resultCount":0,
+                    "results": []
                 }
         """
         return data.data(using: .utf8)!

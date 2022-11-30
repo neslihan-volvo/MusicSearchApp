@@ -20,7 +20,7 @@ final class ImageDownloaderTests: XCTestCase {
         sut = ImageDownloader(networkClient: mockClient)
         
         do{
-            let image = try await sut.getImage(url:searchKey)
+            _ = try await sut.getImage(url:searchKey)
             XCTFail("expecting error")
         }catch{
             XCTAssertEqual(error as? ImageDownloaderError, ImageDownloaderError.networkResponseInvalid)
@@ -31,10 +31,11 @@ final class ImageDownloaderTests: XCTestCase {
         
         let stringURL = "imageURL"
         let mockClient = MockNetworkClient()
+        mockClient.data = Data()
         sut = ImageDownloader(networkClient: mockClient)
         
         do{
-            let image = try await sut.getImage(url: stringURL)
+            _ = try await sut.getImage(url: stringURL)
             XCTFail("Should return error")
         }catch{
             XCTAssertEqual(error as? ImageDownloaderError, ImageDownloaderError.imageInitializationFailed)
@@ -49,24 +50,33 @@ final class ImageDownloaderTests: XCTestCase {
         sut = ImageDownloader(networkClient: mockClient)
         do{
             
-            let image = try await sut.getImage(url: stringURL)
+            _ = try await sut.getImage(url: stringURL)
             XCTFail("Should return error")
             
         }catch{
             XCTAssertEqual(error as? ImageDownloaderError?, ImageDownloaderError.urlInvalid)
         }
     }
-    func testImageDownloader_whenRequestSuccesful_returnResponse() async throws {
+    func testImageDownloader_whenRequestSuccesful_returnResponse() async {
         let mockClient = MockNetworkClient()
         mockClient.data = ImageDownloaderTests.imageMockData()
         sut = ImageDownloader(networkClient: mockClient)
         do{
             let image = try await sut.getImage(url: "imageURL" )
             XCTAssertNotNil(image)
-            //XCTAssertIdentical(image, UIImage(named: "sampleImage"))
-            //(image,[UIImage (named: "sampleImage")])
         }catch{
-            
+            XCTFail("Should not thrown an error")
+        }
+    }
+    func testImageDownloader_whenRequestReturnsNil_returnError() async {
+        let mockClient = FalingMockNetworkClient()
+        //mockClient.data = Data()
+        sut = ImageDownloader(networkClient: mockClient)
+        do {
+            _ = try await sut.getImage(url: "imageURL")
+            XCTFail("should throw an error")
+        } catch {
+            XCTAssertEqual(error as? ImageDownloaderError,  ImageDownloaderError.imageDownloadFailed)
         }
     }
 }

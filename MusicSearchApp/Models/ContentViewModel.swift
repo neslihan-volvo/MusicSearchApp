@@ -2,10 +2,9 @@ import Foundation
 protocol NetworkClient: AnyObject {
     func load(request: URLRequest) async throws -> (Data, URLResponse)
 }
-class DefaultNetworkClient:NetworkClient {
+class DefaultNetworkClient: NetworkClient {
     
     func load(request: URLRequest) async throws -> (Data, URLResponse) {
-        
         let session = URLSession.shared
         return try await session.data(for: request)
     }
@@ -44,12 +43,11 @@ class ContentViewModel: ObservableObject {
         }
         
         do {
-            let musicSearchResponse = try  JSONDecoder().decode(MusicSearchResponse.self, from: data)
+            let musicSearchResponse = try JSONDecoder().decode(MusicSearchResponse.self, from: data)
             await MainActor.run {
                 musicResultList = musicSearchResponse.results
                 showAlert = musicSearchResponse.resultCount == 0 ? true : false
             }
-            
         } catch {
             throw MusicSearchError.jsonDecodeFailed
         }
