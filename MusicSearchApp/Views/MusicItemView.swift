@@ -2,8 +2,8 @@ import SwiftUI
 
 struct MusicItemView: View {
     
-    var musicItem : MusicItemModel
-    var imageDownloader = ImageDownloader()
+    let musicItem : MusicItemModel
+    private let imageDownloader = ImageDownloader()
     @State private var image = UIImage()
     
     var body: some View {

@@ -1,28 +1,28 @@
 import SwiftUI
-
 struct ContentView: View {
     @State private var keyword = ""
     @ObservedObject private var viewModel = ContentViewModel()
     
     var body: some View {
-        
         NavigationView() {
-            List(viewModel.musicResultList) { musicItem in
-                MusicItemView(musicItem: musicItem)
-                    .listRowSeparator(.hidden)
+            switch viewModel.state{
+            case .loaded(results: let results):
+                List(results) { musicItem in
+                    MusicItemView(musicItem: musicItem)
+                        .listRowSeparator(.hidden)
+                }
+            case .error:
+                Text("Unable to load")
+            case .loading:
+                ProgressView("Loading")
+            case .idle:
+                Text("Waiting for an input.")
             }
-        }
-        .alert(
-            "There is no search result. Plese try another keyword.",
-            isPresented: $viewModel.showAlert
-        ) {
-            Button("Dismiss", role: .cancel) { viewModel.showAlert = false }
-            
         }
         .searchable(text: $keyword, placement: .navigationBarDrawer(displayMode: .always))
         .onSubmit(of: .search) {
             Task {
-                try await viewModel.getMusicList(keyword)
+                await viewModel.loadResults(keyword)
             }
         }
     }

@@ -1,36 +1,41 @@
 import Foundation
 
 class ContentViewModel: ObservableObject {
-    @Published var musicResultList: [MusicItemModel] = []
+    @Published var state: State = .idle
     @Published var showAlert = false
-    let networkClient : NetworkClient
+    
+    public enum State {
+        case idle
+        case loading
+        case loaded ( results : [MusicItemModel])
+        case error
+    }
+    let networkClient: NetworkClient
     
     init(networkClient: NetworkClient = DefaultNetworkClient()) {
         self.networkClient = networkClient
     }
     
-    func getMusicList(_ searchKey: String) async throws {
-        
-        let musicSearchRequest = MusicSearchRequest(searchKey)
-        
-        guard let (data, response) = try? await networkClient.load(request: musicSearchRequest )
-        else {
-            throw MusicSearchError.requestFailed
+    func loadResults(_ searchKey: String) async {
+        let key = searchKey.makeSearchString()
+        let urlPath = "https://itunes.apple.com/search?term=\(key)&media=music"
+        await MainActor.run {
+            state = .loading
         }
-        
-        guard let httpResponse = response as? HTTPURLResponse, (200..<300).contains(httpResponse.statusCode)
-        else {
-            throw MusicSearchError.networkResponseInvalid
-        }
-        
         do {
+            let (data, response) = try await networkClient.load(path: urlPath)
+            guard let httpResponse = response as? HTTPURLResponse, (200..<300).contains(httpResponse.statusCode)
+            else {
+                throw MusicSearchError.networkResponseInvalid
+            }
             let musicSearchResponse = try JSONDecoder().decode(MusicSearchResponse.self, from: data)
             await MainActor.run {
-                musicResultList = musicSearchResponse.results
-                showAlert = musicSearchResponse.resultCount == 0 ? true : false
+                state = .loaded(results: musicSearchResponse.results)
             }
         } catch {
-            throw MusicSearchError.jsonDecodeFailed
+            await MainActor.run {
+                state = .error
+            }
         }
     }
 }

@@ -13,7 +13,7 @@ class MockNetworkClient: NetworkClient {
     var url = "https://www.volvocars.com"
     var data = MockNetworkClient.mockData()
     
-    func load(request: MusicSearchRequest) async throws -> (Data, URLResponse) {
+    func load(request: URLRequest) async throws -> (Data, URLResponse) {
         let urlResponse = HTTPURLResponse.mock(statusCode: statusCode, url: url)
         return (data, urlResponse)
     }
@@ -27,7 +27,7 @@ extension HTTPURLResponse {
     }
 }
 class FalingMockNetworkClient : NetworkClient {
-    func load(request: MusicSearchRequest) async throws -> (Data, URLResponse) {
+    func load(request: URLRequest) async throws -> (Data, URLResponse) {
         throw NSError()
     }
 }

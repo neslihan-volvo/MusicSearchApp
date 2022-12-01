@@ -4,10 +4,9 @@ import AVKit
 struct DetailsView: View {
     
     var details: MusicItemModel
-    @State private var musicPlayer = AVPlayer()
+    private let musicPlayer = AVPlayer()
     @State private var image = UIImage()
     @State var buttonText = "Play"
-    @State var playing = false
     var imageDownloader = ImageDownloader()
     
     var body: some View {
@@ -33,7 +32,6 @@ struct DetailsView: View {
                 .font(.title2)
         }
         .task {
-            musicPlayer = AVPlayer(url: URL(string: details.previewUrl)!)
             await getImage()
         }
         .onDisappear(perform: {
@@ -50,14 +48,16 @@ struct DetailsView: View {
     }
     
     func play(){
-        if playing {
+        if musicPlayer.rate == 1 {
             musicPlayer.pause()
             buttonText = "Play"
         }else{
+            if musicPlayer.currentItem == nil {
+                musicPlayer.replaceCurrentItem(with: AVPlayerItem(url: URL(string: details.previewUrl)!))
+            }
             musicPlayer.play()
             buttonText = "Pause"
         }
-        playing.toggle()
     }
 }
 
