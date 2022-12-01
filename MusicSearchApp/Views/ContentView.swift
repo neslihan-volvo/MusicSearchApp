@@ -9,7 +9,7 @@ struct ContentView: View {
         NavigationView() {
             List(viewModel.musicResultList) { musicItem in
                 MusicItemView(musicItem: musicItem)
-                .listRowSeparator(.hidden)
+                    .listRowSeparator(.hidden)
             }
         }
         .alert(
@@ -29,7 +29,6 @@ struct ContentView: View {
 }
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        
         ContentView()
     }
 }

@@ -9,17 +9,15 @@ class ImageDownloader {
     }
     
     func getImage(url: String) async throws -> UIImage {
-        guard let imageURL = URL(string: url)
-        else {
-            throw ImageDownloaderError.urlInvalid
-        }
-        let request = URLRequest(url: imageURL)
-       
+        
+        var request = MusicSearchRequest(url)
+        request.urlPath = url
+        
         guard let (data, response) = try? await networkClient.load(request: request)
         else {
-            throw ImageDownloaderError.imageDownloadFailed
+            throw ImageDownloaderError.requestFailed
         }
-
+        
         guard let httpResponse = response as? HTTPURLResponse, (200..<300).contains(httpResponse.statusCode)
         else {
             throw ImageDownloaderError.networkResponseInvalid

@@ -8,17 +8,15 @@
 import Foundation
 @testable import MusicSearchApp
 
-class MockNetworkClient:NetworkClient {
+class MockNetworkClient: NetworkClient {
     var statusCode = 200
     var url = "https://www.volvocars.com"
     var data = MockNetworkClient.mockData()
     
-    func load(request: URLRequest) async throws -> (Data, URLResponse) {
+    func load(request: MusicSearchRequest) async throws -> (Data, URLResponse) {
         let urlResponse = HTTPURLResponse.mock(statusCode: statusCode, url: url)
         return (data, urlResponse)
     }
-    
-    
 }
 extension HTTPURLResponse {
     static func mock(statusCode: Int, url: String) -> HTTPURLResponse {
@@ -29,11 +27,9 @@ extension HTTPURLResponse {
     }
 }
 class FalingMockNetworkClient : NetworkClient {
-    func load(request: URLRequest) async throws -> (Data, URLResponse) {
+    func load(request: MusicSearchRequest) async throws -> (Data, URLResponse) {
         throw NSError()
     }
-    
-    
 }
 extension MockNetworkClient {
     static func mockData() -> Data {
@@ -71,7 +67,7 @@ extension MockNetworkClient {
                             "currency":"USD",
                             "primaryGenreName":"Turkish Pop",
                             "isStreamable":true
-
+        
                         },
                         {
                             "wrapperType":"track",
@@ -103,7 +99,7 @@ extension MockNetworkClient {
                             "currency":"USD",
                             "primaryGenreName":"Turkish Pop",
                             "isStreamable":true
-
+        
                         }
                        ]
                 }

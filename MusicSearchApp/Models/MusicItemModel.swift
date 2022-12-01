@@ -35,17 +35,15 @@ public enum MusicSearchError: Error {
     case networkResponseInvalid
     case jsonDecodeFailed
     case urlInvalid
-    case searchKeyInvalid
 }
 
 public enum ImageDownloaderError: Error {
-    case imageDownloadFailed
-    case imageInitializationFailed
+    case requestFailed
     case networkResponseInvalid
-    case urlInvalid
+    case imageInitializationFailed
 }
 
-var item1 = MusicItemModel(
+var item = MusicItemModel(
     id:123124,
     wrapperType: WrapperType.track,
     kind: "song",
@@ -56,16 +54,3 @@ var item1 = MusicItemModel(
     artworkUrl60: "http://a1.itunes.apple.com/r10/Music/3b/6a/33/mzi.qzdqwsel.60x60-50.jpg",
     previewUrl: "http://a1099.itunes.apple.com/r10/Music/f9/54/43/mzi.gqvqlvcq.aac.p.m4p"
 )
-var item2 = MusicItemModel(
-    id:123124,
-    wrapperType: WrapperType.track,
-    kind: "song",
-    trackName: "Upside Down",
-    artistName: "Jack Johnson",
-    collectionName: "Sing-a-Longs and Lullabies for the Film Curious George",
-    artworkUrl100: "http://a1.itunes.apple.com/r10/Music/3b/6a/33/mzi.qzdqwsel.100x100-75.jpg",
-    artworkUrl60: "http://a1.itunes.apple.com/r10/Music/3b/6a/33/mzi.qzdqwsel.60x60-50.jpg",
-    previewUrl: "http://a1099.itunes.apple.com/r10/Music/f9/54/43/mzi.gqvqlvcq.aac.p.m4p"
-)
-var musicListArray = [item1, item2]
-

@@ -1,9 +1,3 @@
-//
-//  DetailsView.swift
-//  MusicSearchApp
-//
-//  Created by Neslihan Doğan Aydemir on 2022-11-15.
-//
 import SwiftUI
 import AVKit
 
@@ -11,7 +5,6 @@ struct DetailsView: View {
     
     var details: MusicItemModel
     @State private var musicPlayer = AVPlayer()
-    @State private var downloaded = false
     @State private var image = UIImage()
     
     var imageDownloader = ImageDownloader()
@@ -45,10 +38,9 @@ struct DetailsView: View {
                 //Text(String(details.currency)).font(.footnote)
             }
         }
-        .task { 
+        .task {
             await getImage()
         }
-        
     }
     
     func getImage() async {
@@ -67,11 +59,6 @@ struct DetailsView: View {
 
 struct DetailsView_Previews: PreviewProvider {
     static var previews: some View {
-        DetailsView(details: item1)
+        DetailsView(details: item)
     }
 }
-
-
-
-
-

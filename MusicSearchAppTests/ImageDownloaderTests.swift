@@ -2,16 +2,16 @@ import XCTest
 @testable import MusicSearchApp
 
 final class ImageDownloaderTests: XCTestCase {
-
+    
     var sut : ImageDownloader!
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
     }
-
+    
     override func tearDownWithError() throws {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
-
+    
     func testImageDownloader_whenRequestFailed_throwsError() async throws{
         
         let searchKey = "imageURL"
@@ -42,21 +42,6 @@ final class ImageDownloaderTests: XCTestCase {
         }
         
     }
-    func testImageDownloader_whenUrlInvalid_returnError() async throws{
-        
-        let stringURL = ""
-        let mockClient = MockNetworkClient()
-        mockClient.url = stringURL
-        sut = ImageDownloader(networkClient: mockClient)
-        do{
-            
-            _ = try await sut.getImage(url: stringURL)
-            XCTFail("Should return error")
-            
-        }catch{
-            XCTAssertEqual(error as? ImageDownloaderError?, ImageDownloaderError.urlInvalid)
-        }
-    }
     func testImageDownloader_whenRequestSuccesful_returnResponse() async {
         let mockClient = MockNetworkClient()
         mockClient.data = ImageDownloaderTests.imageMockData()
@@ -76,7 +61,7 @@ final class ImageDownloaderTests: XCTestCase {
             _ = try await sut.getImage(url: "imageURL")
             XCTFail("should throw an error")
         } catch {
-            XCTAssertEqual(error as? ImageDownloaderError,  ImageDownloaderError.imageDownloadFailed)
+            XCTAssertEqual(error as? ImageDownloaderError,  ImageDownloaderError.requestFailed)
         }
     }
 }

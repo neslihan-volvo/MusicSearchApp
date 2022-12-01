@@ -1,9 +1,3 @@
-//
-//  ImageView.swift
-//  MusicSearchApp
-//
-//  Created by Neslihan Doğan Aydemir on 2022-11-15.
-//
 import SwiftUI
 
 struct MusicItemView: View {
@@ -46,6 +40,6 @@ struct MusicItemView: View {
 
 struct MusicListItemView_Previews: PreviewProvider {
     static var previews: some View {
-        MusicItemView(musicItem: item1)
+        MusicItemView(musicItem: item)
     }
 }

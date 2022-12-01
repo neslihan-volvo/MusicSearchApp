@@ -1,19 +1,8 @@
 import Foundation
-protocol NetworkClient: AnyObject {
-    func load(request: URLRequest) async throws -> (Data, URLResponse)
-}
-class DefaultNetworkClient: NetworkClient {
-    
-    func load(request: URLRequest) async throws -> (Data, URLResponse) {
-        let session = URLSession.shared
-        return try await session.data(for: request)
-    }
-}
 
 class ContentViewModel: ObservableObject {
     @Published var musicResultList: [MusicItemModel] = []
     @Published var showAlert = false
-    
     let networkClient : NetworkClient
     
     init(networkClient: NetworkClient = DefaultNetworkClient()) {
@@ -21,18 +10,10 @@ class ContentViewModel: ObservableObject {
     }
     
     func getMusicList(_ searchKey: String) async throws {
-
-        let searchString = searchKey.makeSearchString()
-        let urlPath = "https://itunes.apple.com/search?term=\(searchString)&media=music"
         
-        // should I move follwing 5 lines to defoult network client with new func name?
-        guard let searchURL = URL(string: urlPath)
-        else {
-            throw MusicSearchError.urlInvalid
-        }
-        let request = URLRequest(url: searchURL)
+        let musicSearchRequest = MusicSearchRequest(searchKey)
         
-        guard let (data, response) = try? await networkClient.load(request: request )
+        guard let (data, response) = try? await networkClient.load(request: musicSearchRequest )
         else {
             throw MusicSearchError.requestFailed
         }
@@ -52,5 +33,4 @@ class ContentViewModel: ObservableObject {
             throw MusicSearchError.jsonDecodeFailed
         }
     }
-    
 }

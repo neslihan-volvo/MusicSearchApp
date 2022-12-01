@@ -5,7 +5,6 @@ final class ContentViewModelTests: XCTestCase {
     var sut : ContentViewModel!
     
     func testContentViewModel_whenRequestFailed_throwsError() async throws{
-        
         let searchKey = "anything"
         let mockClient = MockNetworkClient()
         mockClient.statusCode = 404
@@ -17,7 +16,6 @@ final class ContentViewModelTests: XCTestCase {
         }catch{
             XCTAssertEqual(error as? MusicSearchError, MusicSearchError.networkResponseInvalid)
         }
-        
     }
     
     func testContentViewModel_whenRequestSuccesful_returnResponse() async throws{
@@ -29,7 +27,7 @@ final class ContentViewModelTests: XCTestCase {
         do{
             try await sut.getMusicList(searchKey)
             let musicItemResult = sut.musicResultList.first
-            XCTAssertTrue(sut.showAlert)
+            XCTAssertFalse(sut.showAlert)
             XCTAssertEqual(musicItemResult?.wrapperType,WrapperType.track)
             XCTAssertEqual(musicItemResult?.kind, "song")
             XCTAssertEqual(musicItemResult?.id, 965168795)
@@ -58,7 +56,6 @@ final class ContentViewModelTests: XCTestCase {
         }catch{
             XCTAssertEqual(error as? MusicSearchError, MusicSearchError.jsonDecodeFailed)
         }
-        
     }
     func testContentViewModel_whenSearchResultCountZero_setShowAlertTrue() async {
         let searchKey = "meaninglesSearchKey"
@@ -76,16 +73,12 @@ final class ContentViewModelTests: XCTestCase {
         }
     }
     override func setUpWithError() throws {
-            
-            //let mockClient = MockNetworkClient()
-            //sut = ContentViewModel(networkClient: mockClient)
-        }
-
+        
+        //let mockClient = MockNetworkClient()
+        //sut = ContentViewModel(networkClient: mockClient)
+    }
     override func tearDownWithError() throws {
         
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
-
-    
-
 }

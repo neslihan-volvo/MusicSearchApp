@@ -1,13 +1,10 @@
-//
-//  MusicSearchRequest.swift
-//  MusicSearchApp
-//
-//  Created by Neslihan Doğan Aydemir on 2022-11-16.
-//
-
 import Foundation
 
 public struct MusicSearchRequest {
+    public var urlPath : String
     
+    public init(_ key: String) {
+        let searchKey = key.makeSearchString()
+        self.urlPath = "https://itunes.apple.com/search?term=\(searchKey)&media=music"
+    }
 }
-
