@@ -5,19 +5,20 @@ struct DetailsView: View {
     
     var details: MusicItemModel
     private let musicPlayer = AVPlayer()
-    @State private var image = UIImage()
     @State var buttonText = "Play"
-    var imageDownloader = ImageDownloader()
     
     var body: some View {
         VStack{
             Spacer()
-            Image(uiImage: image)
-                .frame(width: 150, height: 150)
+            AsyncImage(url: URL(string: details.artworkUrl100)) { image in
+                image.frame(width: 150, height: 150)
                 .scaledToFill()
                 .overlay(Rectangle().stroke(Color.white,lineWidth: 3))
                 .shadow(radius: 8)
                 .padding()
+            } placeholder: {
+                ProgressView()
+            }
             Text(details.artistName)
                 .font(.title)
             Text(details.trackName)
@@ -31,20 +32,9 @@ struct DetailsView: View {
             Text(details.collectionName)
                 .font(.title2)
         }
-        .task {
-            await getImage()
-        }
         .onDisappear(perform: {
             musicPlayer.pause()
         })
-    }
-    
-    func getImage() async {
-        do {
-            image = try await imageDownloader.getImage(url: details.artworkUrl100)
-        } catch {
-            print(error)
-        }
     }
     
     func play(){

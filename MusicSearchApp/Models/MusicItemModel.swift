@@ -37,12 +37,6 @@ public enum MusicSearchError: Error {
     case urlInvalid
 }
 
-public enum ImageDownloaderError: Error {
-    case requestFailed
-    case networkResponseInvalid
-    case imageInitializationFailed
-}
-
 var item = MusicItemModel(
     id:123124,
     wrapperType: WrapperType.track,

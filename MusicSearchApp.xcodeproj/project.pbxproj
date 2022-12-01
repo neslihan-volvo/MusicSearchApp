@@ -9,8 +9,6 @@
 /* Begin PBXBuildFile section */
 		9B037266292F6EA400DA6369 /* ContentViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B037265292F6EA400DA6369 /* ContentViewModelTests.swift */; };
 		9B0372682933FDA200DA6369 /* StringExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B0372672933FDA200DA6369 /* StringExtensionTests.swift */; };
-		9B03726A293425F700DA6369 /* AlertType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B037269293425F700DA6369 /* AlertType.swift */; };
-		9B4ECCF52934F81B000766AE /* ImageDownloaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B4ECCF42934F81B000766AE /* ImageDownloaderTests.swift */; };
 		9B4ECCF92935EEAF000766AE /* MockNetworkClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B4ECCF82935EEAF000766AE /* MockNetworkClient.swift */; };
 		9B4ECCFB29360B64000766AE /* sampleImage.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 9B4ECCFA29360B64000766AE /* sampleImage.jpg */; };
 		9B4ECD3D2938628B000766AE /* NetworkClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B4ECD3C2938628B000766AE /* NetworkClient.swift */; };
@@ -20,7 +18,6 @@
 		9B5D79802927E57B00141452 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B5D797F2927E57B00141452 /* ContentView.swift */; };
 		9B5D79CD292B4A1E00141452 /* MusicItemModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B5D79CC292B4A1E00141452 /* MusicItemModel.swift */; };
 		9B5D79D0292B4B6300141452 /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B5D79CF292B4B6300141452 /* StringExtension.swift */; };
-		9B5D79D2292B4C2700141452 /* ImageDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B5D79D1292B4C2700141452 /* ImageDownloader.swift */; };
 		9BAEB21C2922802B00C61CBD /* MusicSearchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BAEB21B2922802B00C61CBD /* MusicSearchApp.swift */; };
 		9BAEB2202922802C00C61CBD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9BAEB21F2922802C00C61CBD /* Assets.xcassets */; };
 		9BAEB2232922802C00C61CBD /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9BAEB2222922802C00C61CBD /* Preview Assets.xcassets */; };
@@ -41,8 +38,6 @@
 		9B03724D292F639500DA6369 /* MusicSearchAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MusicSearchAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9B037265292F6EA400DA6369 /* ContentViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewModelTests.swift; sourceTree = "<group>"; };
 		9B0372672933FDA200DA6369 /* StringExtensionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtensionTests.swift; sourceTree = "<group>"; };
-		9B037269293425F700DA6369 /* AlertType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertType.swift; sourceTree = "<group>"; };
-		9B4ECCF42934F81B000766AE /* ImageDownloaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDownloaderTests.swift; sourceTree = "<group>"; };
 		9B4ECCF82935EEAF000766AE /* MockNetworkClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockNetworkClient.swift; sourceTree = "<group>"; };
 		9B4ECCFA29360B64000766AE /* sampleImage.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = sampleImage.jpg; sourceTree = "<group>"; };
 		9B4ECD3C2938628B000766AE /* NetworkClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkClient.swift; sourceTree = "<group>"; };
@@ -52,7 +47,6 @@
 		9B5D797F2927E57B00141452 /* ContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		9B5D79CC292B4A1E00141452 /* MusicItemModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicItemModel.swift; sourceTree = "<group>"; };
 		9B5D79CF292B4B6300141452 /* StringExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
-		9B5D79D1292B4C2700141452 /* ImageDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDownloader.swift; sourceTree = "<group>"; };
 		9BAEB2182922802B00C61CBD /* MusicSearchApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MusicSearchApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9BAEB21B2922802B00C61CBD /* MusicSearchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicSearchApp.swift; sourceTree = "<group>"; };
 		9BAEB21F2922802C00C61CBD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -84,7 +78,6 @@
 				9B4ECCFA29360B64000766AE /* sampleImage.jpg */,
 				9B037265292F6EA400DA6369 /* ContentViewModelTests.swift */,
 				9B0372672933FDA200DA6369 /* StringExtensionTests.swift */,
-				9B4ECCF42934F81B000766AE /* ImageDownloaderTests.swift */,
 				9B4ECCF82935EEAF000766AE /* MockNetworkClient.swift */,
 			);
 			path = MusicSearchAppTests;
@@ -95,8 +88,6 @@
 			children = (
 				9BDAAE5B292CBD420075EFD4 /* ContentViewModel.swift */,
 				9B5D79CC292B4A1E00141452 /* MusicItemModel.swift */,
-				9B5D79D1292B4C2700141452 /* ImageDownloader.swift */,
-				9B037269293425F700DA6369 /* AlertType.swift */,
 				9B4ECD3C2938628B000766AE /* NetworkClient.swift */,
 			);
 			path = Models;
@@ -274,7 +265,6 @@
 			files = (
 				9B037266292F6EA400DA6369 /* ContentViewModelTests.swift in Sources */,
 				9B4ECCF92935EEAF000766AE /* MockNetworkClient.swift in Sources */,
-				9B4ECCF52934F81B000766AE /* ImageDownloaderTests.swift in Sources */,
 				9B0372682933FDA200DA6369 /* StringExtensionTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -290,9 +280,7 @@
 				9B5D79D0292B4B6300141452 /* StringExtension.swift in Sources */,
 				9B5D797E2927E25A00141452 /* DetailsView.swift in Sources */,
 				9BDAAE5C292CBD420075EFD4 /* ContentViewModel.swift in Sources */,
-				9B5D79D2292B4C2700141452 /* ImageDownloader.swift in Sources */,
 				9B5D79CD292B4A1E00141452 /* MusicItemModel.swift in Sources */,
-				9B03726A293425F700DA6369 /* AlertType.swift in Sources */,
 				9B4ECD3D2938628B000766AE /* NetworkClient.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
