@@ -12,20 +12,21 @@ struct ContentView: View {
                         .listRowSeparator(.hidden)
                 }
             case .error:
-                Text("Unable to load")
+                Text("Unable to load try another keyword")
             case .loading:
                 ProgressView("Loading")
             case .idle:
                 Text("Waiting for an input.")
             }
         }
-        .searchable(text: $keyword, placement: .navigationBarDrawer(displayMode: .always))
+        .searchable(text: $keyword, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search for music")
         .onSubmit(of: .search) {
             Task {
                 await viewModel.loadResults(keyword)
             }
         }
     }
+    
 }
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {

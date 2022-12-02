@@ -4,11 +4,26 @@ class ContentViewModel: ObservableObject {
     @Published var state: State = .idle
     @Published var showAlert = false
     
-    public enum State {
+    public enum State: Equatable{
         case idle
         case loading
         case loaded ( results : [MusicItemModel])
         case error
+        
+        public static func == (lhs: State, rhs: State) -> Bool {
+            switch (lhs, rhs){
+            case (.idle, .idle):
+                return true
+            case (.loading, .loading):
+                return true
+            case (.error, .error):
+                return true
+            case (.loaded(results: var lhsResults), .loaded(results: var rhsResults)):
+                return lhsResults == rhsResults
+            default:
+                return false
+            }
+        }
     }
     let networkClient: NetworkClient
     

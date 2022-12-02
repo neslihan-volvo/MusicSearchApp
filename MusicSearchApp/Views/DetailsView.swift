@@ -11,11 +11,11 @@ struct DetailsView: View {
         VStack{
             Spacer()
             AsyncImage(url: URL(string: details.artworkUrl100)) { image in
-                image.frame(width: 150, height: 150)
-                .scaledToFill()
-                .overlay(Rectangle().stroke(Color.white,lineWidth: 3))
-                .shadow(radius: 8)
-                .padding()
+                image.resizable()
+                    .frame(width:200,height:200)
+                    .overlay(Rectangle().stroke(Color.white,lineWidth: 3))
+                    .shadow(radius: 8)
+                    .padding()
             } placeholder: {
                 ProgressView()
             }
@@ -30,7 +30,10 @@ struct DetailsView: View {
             .font(.title)
             Spacer()
             Text(details.collectionName)
+                .lineLimit(3)
                 .font(.title2)
+            
+            Spacer()
         }
         .onDisappear(perform: {
             musicPlayer.pause()

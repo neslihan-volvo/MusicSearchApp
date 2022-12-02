@@ -1,6 +1,6 @@
 import Foundation
 
-public struct MusicItemModel: Codable, Identifiable {
+public struct MusicItemModel: Codable, Identifiable, Equatable {
     
     public let id : Int
     public let wrapperType: WrapperType
