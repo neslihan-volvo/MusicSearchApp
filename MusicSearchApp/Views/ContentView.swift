@@ -1,6 +1,5 @@
 import SwiftUI
 struct ContentView: View {
-    @State private var keyword = ""
     @ObservedObject private var viewModel = ContentViewModel()
     
     var body: some View {
@@ -19,12 +18,7 @@ struct ContentView: View {
                 Text("Waiting for an input.")
             }
         }
-        .searchable(text: $keyword, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search for music")
-        .onSubmit(of: .search) {
-            Task {
-                await viewModel.loadResults(keyword)
-            }
-        }
+        .searchable(text: $viewModel.keyword, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search for music")
     }
     
 }

@@ -1,37 +1,52 @@
 import Foundation
+import Combine
 
 class ContentViewModel: ObservableObject {
     @Published var state: State = .idle
     @Published var showAlert = false
-    
-    public enum State: Equatable{
+    @Published var keyword = ""
+    public enum State: Equatable {
+        
+        
         case idle
         case loading
         case loaded ( results : [MusicItemModel])
         case error
-        
-        public static func == (lhs: State, rhs: State) -> Bool {
-            switch (lhs, rhs){
-            case (.idle, .idle):
-                return true
-            case (.loading, .loading):
-                return true
-            case (.error, .error):
-                return true
-            case (.loaded(results: var lhsResults), .loaded(results: var rhsResults)):
-                return lhsResults == rhsResults
+        // 2.way of getting results
+        var results: [MusicItemModel]? {
+            switch self {
+            case .loaded(results: let result):
+                return result
             default:
-                return false
+                return nil
             }
         }
     }
     let networkClient: NetworkClient
+    private var disposables = Set<AnyCancellable>()
+    private var disposable: AnyCancellable?
     
     init(networkClient: NetworkClient = DefaultNetworkClient()) {
         self.networkClient = networkClient
+        $keyword
+            .debounce(for: .milliseconds(800), scheduler: RunLoop.main)
+            .sink { completion in
+                switch completion{
+                case .finished:
+                    print("successfully finished")
+                case .failure:
+                    print("failed")
+                }
+            } receiveValue: { [self] searchKey in
+                Task {
+                    await loadResults(searchKey)
+                }
+            }
+            .store(in: &disposables)
     }
     
     func loadResults(_ searchKey: String) async {
+        
         let key = searchKey.makeSearchString()
         let urlPath = "https://itunes.apple.com/search?term=\(key)&media=music"
         await MainActor.run {
